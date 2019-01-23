@@ -1,0 +1,20 @@
+
+html, body, main {
+  overflow: hidden;
+}
+
+#site-head {
+  border-bottom: 1px solid #eee;
+}
+
+.card {
+  margin-top: .5rem;
+}
+
+.pipeline article.card {
+  padding: .25rem .5rem;
+}
+
+#main {
+  position: relative;
+}

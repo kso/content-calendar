@@ -1,0 +1,78 @@
+<app>
+
+  <!-- header -->
+  <nav id="site-head" class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="">
+        <h1 class="is-size-2 is-primary">Content Calendar</h1>
+      </a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div class="columns">
+      <div class="column is-one-fifth">
+        <content-pipeline></content-pipeline>
+      </div>
+      <div class="column is-four-fifths">
+        <content-calendar start="4" end="24"></content-calendar>
+      </div>
+    </div>
+  </main>
+
+  <script>
+
+    // set up drag
+    let drake = dragula({
+      isContainer: function (el) {
+        return el.classList.contains('day') || el.classList.contains('pipeline-items');
+      },
+      accepts: function (el, target, source, sibling) {
+        return target.classList.contains('current') || target.classList.contains('pipeline-items');
+      },
+      invalid: function (el, handle) {
+        return el.classList.contains('published');
+      },
+      mirrorContainer: document.body
+    });
+
+    drake.on('drop', function(el,target,source,sibling){
+
+      // if we haven't moved it then don't try to udpate
+      if (target===source) return;
+
+      if (target.classList.contains('current')){
+        // moving to a future day - change publish date
+        let entry_id = el.getAttribute('id')
+        let publish_date = target.getAttribute('data-date-iso')
+        bus.trigger('set_publish_date',{id:entry_id, publish_date:publish_date});
+
+      } else if (target.classList.contains('pipeline-items')){
+        // putting back in pipeline so remove date
+        let entry_id = el.getAttribute('id');
+        bus.trigger('set_publish_date',{id:entry_id, publish_date:null});
+      }
+
+    });
+
+    bus.on('resize', function(){
+
+      // pipeline
+      let p = document.querySelector('.pipeline-items');
+      let b = p.getBoundingClientRect();
+      p.style.height = (window.innerHeight - b.top - 5).toString() + 'px';
+
+      // calendar
+      p = document.querySelector('#calendar-days');
+      b = p.getBoundingClientRect();
+      p.style.height = (window.innerHeight - b.top - 5).toString() + 'px';
+
+    });
+
+    window.addEventListener('resize',function(){
+      bus.trigger('resize');
+    });
+
+  </script>
+
+</app>

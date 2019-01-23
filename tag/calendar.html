@@ -1,0 +1,171 @@
+<content-calendar>
+
+  <div id="calendar">
+    <table>
+      <thead>
+        <tr>
+          <th width="14.25%">Sunday</th>
+          <th width="14.25%">Monday</th>
+          <th width="14.25%">Tuesday</th>
+          <th width="14.25%">Wednesday</th>
+          <th width="14.25%">Thursday</th>
+          <th width="14.25%">Friday</th>
+          <th width="14.25%">Saturday</th>
+        </tr>
+      </thead>
+    </table>
+    <div id="calendar-days">
+      <table>
+        <tbody>
+          <tr each={calendar.weeks} class="week">
+            <td width="14.25%" each={day, index in days} class="day {current:day.current==1, today: day.today==1, firstday: day.day==1}" data-date-iso={day.iso} data-date-local={day.local}>
+              <span class="daynum"><span if={day.day==1||index==0}>{day.month_name}&nbsp;</span>{day.day}</span>
+              <content-entry each={day.entries} item={this} id={sys.id}></content-entry>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <style scoped>
+  #calendar {
+    margin-top: 2rem;
+    padding-right: 1.5rem;
+  }
+
+  #calendar table {
+    width: 100%;
+  }
+
+  #calendar table thead tr th {
+    text-align: center;
+    font-weight: normal;
+    font-size: 1.5rem;
+  }
+
+  #calendar-days {
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+  }
+
+  #calendar-days table {
+    border: 1px solid #ccc;
+  }
+
+  td.day {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    position: relative;
+    background: #eee;
+    overflow-y: auto;
+    padding: 2rem 0.5rem;
+  }
+
+  .day.current {
+    background: #fff;
+  }
+
+  .daynum {
+    position: absolute;
+    right: .25rem;
+    top: .25rem;
+    color: #888;
+  }
+
+  .day.firstday .daynum {
+    font-weight: bold;
+  }
+
+  .day.today span.daynum {
+    font-weight: bold;
+    color: #ff0000;
+  }
+
+  </style>
+
+  <script>
+
+  self = this;
+  let now = new Date();
+  self.today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  self.calendar = { weeks: [] }
+
+  self.start = opts.start || 4;
+  self.end = opts.end || 12;
+
+  self.start_date = new Date(self.today.getFullYear(),self.today.getMonth(),self.today.getDate());
+  self.start_date.setDate(self.start_date.getDate() - self.start_date.getDay() - (self.start * 7));
+
+  bus.on('calendar_loaded', function(items){
+    self.calendar = buildCalendar(items);
+    self.update();
+  });
+
+  self.on('mount',function(){
+    bus.trigger('load_calendar',self.start_date);
+    bus.trigger('resize');
+  });
+
+  function buildCalendar(items) {
+
+      let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      let start = new Date(self.start_date.getFullYear(),self.start_date.getMonth(),self.start_date.getDate());
+      let aday = (24*60*60*1000);
+
+      let cal = {
+        year: self.today.getFullYear(),
+        month: self.today.getMonth() + 1,
+        month_name: months[self.today.getMonth()],
+        weeks: []
+      }
+
+      for (let w=0; w <=self.end; w++){
+        let week = {days: []};
+        for (let d=0; d <=6; d++){
+          let day = {
+            day: start.getDate(),
+            month: start.getMonth(),
+            month_name: months[start.getMonth()],
+            year: start.getFullYear(),
+            local: start.toDateString(),
+            iso: start.toISOString(),
+            current: start.valueOf() >= self.today.valueOf() ? 1 : 0,
+            today: start.valueOf() == self.today.valueOf() ? 1 : 0,
+            entries: []
+          };
+          week.days.push(day);
+          if (day.today) week.current = 1;
+          start.setDate(start.getDate() + 1);
+        }
+        if (week.current) cal.weeks[cal.weeks.length-1].previous = 1;
+        cal.weeks.push(week);
+      }
+
+      // add items
+      items.forEach(function(entry){
+
+        let diff = -1;
+
+        try {
+          let pubDate = new Date(entry.fields.publishDate['en-US']);
+          diff = new Date(pubDate.getFullYear(),pubDate.getMonth(),pubDate.getDate()) - self.start_date;
+        } catch(e) {}
+
+        if (diff > 0){
+          let days = parseInt(diff / aday);
+          let weeks = parseInt(days / 7);
+          days = days - (weeks * 7);
+
+          cal.weeks[weeks].days[days].entries.push(entry);
+        }
+      });
+
+      return cal;
+
+  }
+
+  </script>
+
+</content-calendar>

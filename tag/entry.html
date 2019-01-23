@@ -1,0 +1,32 @@
+<content-entry>
+
+  <article class="card {published: opts.item.sys.publishedAt}" id={opts.id}>
+    <header>
+      <p class="is-size-6">
+        {opts.item.fields.title['en-US']}
+      </p>
+    </header>
+  </article>
+
+  <style scoped>
+
+    article.card {
+      padding: .25rem .5rem;
+      border-top: 4px solid #ea9005;
+    }
+
+    article.card.published {
+      border-top: 4px solid #0eb87f;
+    }
+
+    article.card:hover {
+      cursor: move;
+    }
+
+    article.card.published:hover {
+      cursor: default;
+    }
+
+  </style>
+
+</content-entry>

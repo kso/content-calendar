@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>Logged in</title>
+  <script type="text/javascript">
+
+    // Contentful should redirect to this page as #access_token={token}&token_type=bearer
+
+    const regex = /access_token=(\w+)/gm;
+
+    window.onload = function(){
+
+      let matches = regex.exec(window.location.hash);
+
+      if (matches.length==2){
+        sessionStorage.setItem('token', matches[1]);
+        console.log('Got token',matches[1]);
+        window.location.replace('index.html');
+      } else {
+        console.log('Something went wrong trying to extract token',window.location.hash);
+      }
+    }
+    
+  </script>
+</head>
+<body>
+  Logging in...
+</body>
+</html>

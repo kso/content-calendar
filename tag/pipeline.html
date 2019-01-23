@@ -1,0 +1,50 @@
+<content-pipeline>
+
+  <div id="pipeline">
+    <header class="level" style="margin-bottom:0">
+      <div class="level-left">
+        <span class="level-item is-size-4">Pipeline</span>
+      </div>
+    </header>
+    <div class="pipeline-items">
+      <content-entry each={items} item={this} id={sys.id}></content-entry>
+    </div>
+  </div>
+
+
+  <style scoped>
+
+    #pipeline {
+      border-right: 1px solid #eee;
+    }
+
+    #pipeline > header {
+      border-bottom: 1px solid #eee;
+      padding: 0.25rem 2rem;
+    }
+
+    .pipeline-items {
+      overflow-y: auto;
+      padding: 0rem 0.5rem 0.25rem 0.5rem;
+    }
+
+  </style>
+
+
+  <script>
+
+    var self = this;
+    self.items = [];
+
+    self.on('mount',function(){
+      bus.trigger('load_pipeline');
+    });
+
+    bus.on('pipeline_loaded', function(items){
+      self.items = items;
+      self.update();
+    });
+
+  </script>
+
+</content-pipeline>
