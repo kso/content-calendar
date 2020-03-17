@@ -2,9 +2,16 @@
 
   <!-- header -->
   <nav id="site-head" class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-title">
+      <svg width="21" height="24" viewBox="0 0 21 24"><g transform="translate(4 3)"><path d="M3.3 13.7c-1.2-1.2-2-2.9-2-4.7S2 5.5 3.2 4.3c1-1 1-2.7 0-3.8-1-1-2.6-1-3.6 0-2 2.2-3.3 5.2-3.3 8.5s1.3 6.3 3.4 8.5c1 1 2.6 1 3.6 0 .9-1.1.9-2.7 0-3.8z" fill="#fae501"></path><path d="M3.3 4.3c1.2-1.3 2.8-2 4.6-2s3.4.8 4.6 1.9c1 1.1 2.6 1.1 3.6 0 1-1 1-2.7 0-3.8C13.9-1.6 11-3 7.8-3S1.7-1.6-.4.5c-1 1-1 2.7 0 3.8 1 .9 2.6.9 3.7 0z" fill="#4fb5e1"></path><path d="M12.4 13.7c-1.2 1.3-2.8 2-4.6 2-1.8 0-3.4-.8-4.6-2-1-1.1-2.6-1.1-3.6 0-1 1-1 2.7 0 3.8 2.1 2.1 5 3.5 8.2 3.5s6.1-1.4 8.2-3.5c1-1 1-2.7 0-3.8-1-1-2.6-1-3.6 0z" fill="#f05751"></path><ellipse cx="1.4" cy="2.4" rx="2.5" ry="2.6" fill="#0681b6"></ellipse><ellipse cx="1.4" cy="15.6" rx="2.5" ry="2.6" fill="#cd4739"></ellipse></g></svg>
+      <span>TSC</span>
+    </div>
+  </nav>
+  <nav id="section-head" class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="">
-        <h1 class="is-size-2 is-primary">Content Calendar</h1>
+        <span data-icon-name="schedule-calendar" class="icon-component"><svg width="28.5px" height="28.5px" viewBox="0 0 38 38"><g transform="translate(1.03 1.03)" stroke="#0EB87F" stroke-width="1.546" fill="none" fill-rule="evenodd" stroke-linejoin="round"><path stroke-linecap="round" d="M30.928 14.69V3.094h-6.186M6.186 3.093H0v24.742h13.918"></path><path stroke-linecap="round" d="M6.186 0h4.639v6.186H6.186zM20.103 0h4.639v6.186h-4.639zM10.825 3.093h9.278M0 10.825h30.928"></path><circle fill="#C0F2D6" cx="26.289" cy="26.289" r="9.278"></circle><path stroke-linecap="round" d="M30.155 27.835h-3.866v-5.412"></path></g></svg></span>
+        <h1>Scheduled Content > Calendar View</h1>
       </a>
     </div>
   </nav>
@@ -15,7 +22,7 @@
         <content-pipeline></content-pipeline>
       </div>
       <div class="column is-four-fifths">
-        <content-calendar start="4" end="24"></content-calendar>
+        <content-calendar start="4" end="16"></content-calendar>
       </div>
     </div>
   </main>
@@ -31,7 +38,7 @@
         return target.classList.contains('current') || target.classList.contains('pipeline-items');
       },
       invalid: function (el, handle) {
-        return el.classList.contains('published');
+        // return el.classList.contains('published');
       },
       mirrorContainer: document.body
     });

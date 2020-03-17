@@ -41,7 +41,10 @@
   #calendar table thead tr th {
     text-align: center;
     font-weight: normal;
-    font-size: 1.5rem;
+    font-size: 20px;
+    color: #8091a5;
+    /*background: #f7f9fa;*/
+    border-bottom: 1px solid #ccc;
   }
 
   #calendar-days {
@@ -55,10 +58,10 @@
   }
 
   td.day {
-    border-bottom: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    /*border-right: 1px solid #ccc;*/
     position: relative;
-    background: #eee;
+    background: #f7f9fa;
     overflow-y: auto;
     padding: 2rem 0.5rem;
   }
@@ -78,9 +81,13 @@
     font-weight: bold;
   }
 
+  .day.today {
+        border-top: 3px solid #263545;
+  }
+
   .day.today span.daynum {
     font-weight: bold;
-    color: #ff0000;
+    color: #263545;
   }
 
   </style>
@@ -149,12 +156,14 @@
         let diff = -1;
 
         try {
-          let pubDate = new Date(entry.fields.publishDate['en-US']);
+          // let pubDate = new Date(entry.fields.publishDate['en-US']);
+          let pubDateRaw = entry.fields.publishedDate? entry.fields.publishedDate.en: entry.sys.publishedAt;
+          let pubDate = new Date(pubDateRaw);
           diff = new Date(pubDate.getFullYear(),pubDate.getMonth(),pubDate.getDate()) - self.start_date;
         } catch(e) {}
 
         if (diff > 0){
-          let days = parseInt(diff / aday);
+          let days = parseInt(diff / aday) + 1;
           let weeks = parseInt(days / 7);
           days = days - (weeks * 7);
 

@@ -59,23 +59,33 @@ bus.on('set_publish_date',function(data){
       return environment.getEntry(data.id);
     })
     .then(function(entry){
-      let publish_date = {'en-US': data.publish_date}
-      entry.fields.publishDate = publish_date;
+      let publish_date = {'en': data.publish_date}
+      entry.fields.publishedDate = publish_date;
       return entry.update();
     })
     .then(function(entry){
       console.log('Entry ' + entry.sys.id + ' updated ' + JSON.stringify(entry.fields));
     })
+    .then((entry) => {
+      // reload
+      bus.trigger('load_pipeline');
+      bus.trigger('load_calendar');
+    })
     .catch(console.error);
 
 });
 
-bus.on('load_pipeline', function(){
+bus.on('load_pipeline', function(contentType){
+
+  let queryString = '';
+  if(contentType) {
+    queryString = `?content_type=${contentType}`;
+  }
 
   // make a raw request to get the pipeline entries - no publishDate, no publishedAt
   client.rawRequest({
     method: 'GET',
-    url : CONFIG.space_id + '/entries/?&content_type=' + CONFIG.content_type + '&sys.publishedAt[exists]=false&fields.publishDate[exists]=false&order=fields.title'
+    url : CONFIG.space_id + '/environments/' + CONFIG.environment_id + '/entries/' + queryString
   })
   .then(function(data){
     bus.trigger('pipeline_loaded', data.items);
@@ -84,12 +94,27 @@ bus.on('load_pipeline', function(){
 
 });
 
-bus.on('load_calendar', function(start_date){
+bus.on('load_contenttypes', function() {
+  client.rawRequest({
+    method: 'GET',
+    url: CONFIG.space_id + '/environments/' + CONFIG.environment_id + '/content_types/'
+  })
+  .then((data) => {
+    bus.trigger('contenttypes_loaded', data.items);
+  })
+});
+
+bus.on('load_calendar', function(start_date, contentType){
+
+    let queryString = '';
+    if(contentType) {
+      queryString = `?content_type=${contentType}`;
+    }
 
   // make a raw request to get all entries with publishDate ge than start
   client.rawRequest({
     method: 'GET',
-    url : CONFIG.space_id + '/entries/?&content_type=' + CONFIG.content_type + '&fields.publishDate[gte]=' + start_date.toISOString() + '&order=-fields.publishDate'
+    url : CONFIG.space_id + '/environments/' + CONFIG.environment_id + '/entries/' + queryString
   })
   .then(function(data){
     bus.trigger('calendar_loaded', data.items);

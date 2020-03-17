@@ -2,8 +2,15 @@
 
   <div id="pipeline">
     <header class="level" style="margin-bottom:0">
-      <div class="level-left">
-        <span class="level-item is-size-4">Pipeline</span>
+
+      <div class="level-left">        
+        <span data-icon-name="schedule-calendar" class="icon-component"><svg viewBox="0 0 24 24" class="css-13di94k"><path d="M18.25 22H2.417c-.25 0-.417-.167-.417-.417v-17.5c0-.25.167-.416.417-.416h10.416c.25 0 .417.166.417.416 0 .25-.167.417-.417.417h-10v16.667h15v-8.334c0-.25.167-.416.417-.416.25 0 .417.166.417.416v8.75c0 .25-.167.417-.417.417z"></path><path d="M8.333 16.5c-.083 0-.25 0-.333-.083a.403.403 0 010-.584l7.583-7.583a.403.403 0 01.584 0 .403.403 0 010 .583l-7.5 7.5c-.084.084-.167.167-.334.167z"></path><path d="M13.083 13.833c-.75 0-1.416-.25-1.833-.666-1.083-1.084-1.333-2.417-.833-4C11.167 7.083 13.25 5.083 14 5c.083 0 .25 0 .333.083.084.084.167.167.167.334v1.416c1-.5 1.5-2.5 1.5-2.583 0-.167.083-.25.25-.333 2.5-1.084 5.167-1.5 5.25-1.5.167 0 .25 0 .333.166.167.084.167.25.167.334-.083.25-1.25 5.5-4.083 8.25-1.917 1.916-3.584 2.666-4.834 2.666zm.584-7.75c-.75.584-2.084 2-2.5 3.5-.334 1.167-.084 2.084.666 2.917.834.833 2.917.667 5.5-1.917C19.417 8.5 20.583 4.75 21 3.333c-.917.167-2.583.584-4.25 1.25-.167.75-.917 3.084-2.667 3.084-.25 0-.416-.167-.416-.417V6.083z"></path></svg></span>
+        <span class="level-item is-size-4">Content</span>
+
+        <select onchange={contentTypeChange}>
+          <option value="">Any</option>
+          <option each={ix in contentTypes} value={ix.sys.id} selected={current==ix}>{ix.name}</option>
+        </select>
       </div>
     </header>
     <div class="pipeline-items">
@@ -13,19 +20,46 @@
 
 
   <style scoped>
+    .icon-component {
+      height: 24px;
+      width: 24px;
+    }
 
     #pipeline {
-      border-right: 1px solid #eee;
+      background: #f7f9fa;
+      border-right: 1px solid #b4c3ca;
+      box-shadow: rgba(0, 0, 0, 0.09) 1px 0px 2px 0px;
     }
 
     #pipeline > header {
       border-bottom: 1px solid #eee;
-      padding: 0.25rem 2rem;
+      /*padding: 0.25rem 2rem;*/
+      padding: 16px;
+
     }
 
     .pipeline-items {
       overflow-y: auto;
       padding: 0rem 0.5rem 0.25rem 0.5rem;
+    }
+
+    .is-size-4 {
+      font-weight: 600;
+      margin: 0 12px;
+      font-size: 20px !important;
+    }
+
+    select {
+      background-color: #4a90e2;
+      height: 30px;
+      border-radius: 3px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    select option {
+      color: #2a3039;
+      background-color: #fff;
     }
 
   </style>
@@ -38,12 +72,24 @@
 
     self.on('mount',function(){
       bus.trigger('load_pipeline');
+      bus.trigger('load_contenttypes');
     });
 
     bus.on('pipeline_loaded', function(items){
       self.items = items;
       self.update();
     });
+
+    bus.on('contenttypes_loaded', (items) => {
+      self.contentTypes = items;
+      self.update();
+    });
+
+    contentTypeChange(e) {
+      bus.trigger('load_pipeline', e.target.value);
+      bus.trigger('load_calendar', undefined, e.target.value);
+      console.log('selected content type: ', e.target.value);
+    }
 
   </script>
 

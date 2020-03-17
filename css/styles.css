@@ -1,10 +1,39 @@
 
 html, body, main {
   overflow: hidden;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
 }
 
 #site-head {
+	background: #263545;
+	font-size: 14px;
+	color: #fff;
+	padding: 16px;
+}
+
+#site-head div {
+	display: flex;
+}
+
+#site-head div span {
+	margin-left: 16px;
+}
+
+#section-head {
+	background: #f7f9fa;
+	padding: 12px 0;
+	box-shadow: 0 1px 3px rgba(0,0,0,.08);
+	border-bottom: 1px solid #b4c3ca;
+}
+
+.navbar {
   border-bottom: 1px solid #eee;
+}
+
+.navbar h1 {
+	font-size: 21px;
+	font-weight: bold;
+	margin-left: 16px;
 }
 
 .card {
