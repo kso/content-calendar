@@ -1,0 +1,23 @@
+{
+  "name": "content-calendar",
+  "version": "1.0.0",
+  "description": "Content calendar for Contentful",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kso/content-calendar.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kso/content-calendar/issues"
+  },
+  "homepage": "https://github.com/kso/content-calendar#readme"
+}
